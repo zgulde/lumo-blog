@@ -4,7 +4,7 @@
 (def queries
     {:select "SELECT * FROM posts"
      :find "SELECT * FROM posts WHERE id = ?"
-     :insert "INSERT INTO posts(title, body) VALUES (?, ?)"
+     :insert "INSERT INTO posts(title, body, user_id) VALUES (?, ?, ?)"
      :update "UPDATE posts SET title = ?, body = ? WHERE id = ?"
      :delete "DELETE FROM posts WHERE id = ?"})
 
@@ -35,14 +35,15 @@
                                 (resolve nil))))))))
 
 (defn insert
-  [{:keys [title body]}]
+  [{:keys [title body user_id]}]
   (js/Promise.
     (fn [resolve reject]
       (db/insert (:insert queries)
-                 [title body]
+                 [title body user_id]
                  (fn [err id]
                    (if err (reject err) (resolve {:title title
                                                   :body body
+                                                  :user_id user_id
                                                   :id id})))))))
 
 (defn update

@@ -11,7 +11,8 @@
 (defn logged-in-mw [req res next]
   (if req.session.user_id
     (next)
-    (do (.sendStatus res 403))))
+    (do (.status res 403)
+        (.json res (clj->js {:error "Forbidden"})))))
 
 (def express (js/require "express"))
 (def app (express))
@@ -24,6 +25,8 @@
 (.use app error-handler)
 
 (.post app "/login" user-controller/login)
+(.post app "/logout" logged-in-mw user-controller/logout)
+(.get app "/account" logged-in-mw user-controller/account)
 
 (.get    app "/posts"     post-controller/index)
 (.get    app "/posts/:id" post-controller/show)

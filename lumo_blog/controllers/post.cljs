@@ -14,8 +14,10 @@
 
 (defn create
   [req res]
-  (.then (post/insert (js->clj req.body :keywordize-keys true))
-         (fn [post] (.json res (clj->js post)))))
+  (let [post (assoc (js->clj req.body :keywordize-keys true)
+                    :user_id req.session.user_id)]
+    (.then (post/insert post)
+           (fn [post] (.json res (clj->js post))))))
 
 (defn update
   [req res]

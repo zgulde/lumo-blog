@@ -2,12 +2,20 @@
   (:require [lumo-blog.db.user :as user]
             [lumo-blog.util :refer [assign]]))
 
+(defn account [req res]
+  (.then (user/find req.session.user_id)
+         (fn [user] (.json res (clj->js (dissoc user :password))))))
+
 (defn login [req res]
   (.then (user/check-password req.body.email req.body.password)
          (fn [[success id]]
            (if success (do (assign req.session {:user_id id})
                            (.json res (clj->js {:success true})))
                (.json res (clj->js {:error "invalid username or password"}))))))
+
+(defn logout [req res]
+  (do (assign req.session {:user_id nil})
+      (.send res "ok")))
 
 (defn show
   [req res]
