@@ -11,7 +11,8 @@
 (defn- row->post [row]
   {:id row.id
    :title row.title
-   :body row.body})
+   :body row.body
+   :user_id row.user_id})
 
 (defn all []
   (js/Promise.
@@ -41,7 +42,7 @@
                  [title body]
                  (fn [err id]
                    (if err (reject err) (resolve {:title title
-                                                  :body boyd
+                                                  :body body
                                                   :id id})))))))
 
 (defn update
