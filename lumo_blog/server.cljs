@@ -1,18 +1,8 @@
 (ns lumo-blog.server
   (:require [lumo-blog.controllers.post :as post-controller]
             [lumo-blog.controllers.user :as user-controller]
+            [lumo-blog.middlewares :as mw]
             [lumo-blog.util :refer [log-info assign]]))
-
-(defn error-handler
-  [err req res next]
-  (.status res 500)
-  (.json res (clj->js {:error err})))
-
-(defn logged-in-mw [req res next]
-  (if req.session.user_id
-    (next)
-    (do (.status res 403)
-        (.json res (clj->js {:error "Forbidden"})))))
 
 (def express (js/require "express"))
 (def app (express))
@@ -22,17 +12,17 @@
 
 (.use app (.json body-parser))
 (.use app (cookie-session (clj->js {:name "my-session" :secret "secret"})))
-(.use app error-handler)
+(.use app mw/error-handler)
 
 (.post app "/login" user-controller/login)
-(.post app "/logout" logged-in-mw user-controller/logout)
-(.get app "/account" logged-in-mw user-controller/account)
+(.post app "/logout" mw/logged-in user-controller/logout)
+(.get app "/account" mw/logged-in user-controller/account)
 
 (.get    app "/posts"     post-controller/index)
 (.get    app "/posts/:id" post-controller/show)
-(.post   app "/posts"     logged-in-mw post-controller/create)
-(.put    app "/posts/:id" logged-in-mw post-controller/update)
-(.delete app "/posts/:id" logged-in-mw post-controller/destroy)
+(.post   app "/posts"     mw/logged-in post-controller/create)
+(.put    app "/posts/:id" mw/logged-in post-controller/update)
+(.delete app "/posts/:id" mw/logged-in post-controller/destroy)
 
 (.get app "/counter"
       (fn [req res]

@@ -1,5 +1,6 @@
 (ns lumo-blog.controllers.post
-  (:require [lumo-blog.db.post :as post]))
+  (:require [lumo-blog.db.post :as post]
+            [lumo-blog.util :as util]))
 
 (defn index
   [req res]
@@ -12,8 +13,7 @@
          (fn [post]
            (.json res (clj->js post)))))
 
-(defn create
-  [req res]
+(defn create [req res]
   (let [post (assoc (js->clj req.body :keywordize-keys true)
                     :user_id req.session.user_id)]
     (.then (post/insert post)
