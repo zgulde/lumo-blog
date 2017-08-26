@@ -1,4 +1,4 @@
-(ns lumo-blog.tests
+(ns lumo-blog.test.validation
   (:require [lumo-blog.validation :as validate]
             [cljs.test :as test]))
 
