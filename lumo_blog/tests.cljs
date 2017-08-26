@@ -22,8 +22,12 @@
       (test/is (not (:passes (validate/post post))))))
 
   (test/testing "provides error messages for each empty/missing property"
-    (let [validation (validate/post {})]
-      (test/is (string? (:title (:errors validation))) "has a title error message")
-      (test/is (string? (:body (:errors validation))) "has a body error messages"))))
+    (let [validation (validate/post {})
+          title-errors (:title (:errors validation))
+          body-errors (:body (:errors validation))]
+      (test/is (seq title-errors) "title errors are present")
+      (test/is (string? (first title-errors)))
+      (test/is (seq body-errors) "body errors are present")
+      (test/is (string? (first body-errors))))))
 
 (test-post-validation)
