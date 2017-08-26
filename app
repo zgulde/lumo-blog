@@ -8,4 +8,4 @@ fi
 
 cd $BASE_DIR
 
-$BASE_DIR/node_modules/.bin/lumo $BASE_DIR/lumo_blog/server.cljs $@
+$BASE_DIR/node_modules/.bin/lumo -m lumo-blog.core $@

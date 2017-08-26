@@ -1,6 +1,7 @@
 (ns lumo-blog.controllers.user
   (:require [lumo-blog.db.user :as user]
-            [lumo-blog.util :refer [assign]]))
+            [lumo-blog.util :refer [assign]]
+            [lumo-blog.validation :as validate]))
 
 (defn account [req res]
   (.then (user/find req.session.user_id)

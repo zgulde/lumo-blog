@@ -1,9 +1,11 @@
 (ns lumo-blog.core
-  (:require [lumo-blog.env :as env]))
+  (:require [lumo-blog.server :refer [configure-app]]
+            [lumo-blog.util :refer [log-info]]))
 
+(def express (js/require "express"))
+(def app (configure-app (express)))
 
-
-; (defn -main []
-;   (println (util/red "Hello,") (util/blue "World") (util/green "!")))
+(defn -main []
+  (.listen app 1312 #(log-info "app started on port 1312!")))
 
 
