@@ -28,3 +28,18 @@
 
 (defn pw-check [plaintext hash]
   (.compare bcrypt plaintext hash))
+
+; FIXME this needs a better name
+(defn ps
+  "chains .then calls to apply fns to p"
+  [p & fns] (reduce #(.then %1 %2) p fns))
+
+; (ps (.resolve js/Promise 1)
+;     (fn [n] (inc n))
+;     (fn [n] (+ 3 n))
+;     println) ; 5
+; ## as opposed to ##
+; (-> (.resolve js/Promise 1)
+;     (.then (fn [n] (inc n)))
+;     (.then (fn [n] (+ 3 n)))
+;     (.then println))
