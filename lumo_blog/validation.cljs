@@ -24,3 +24,8 @@
   {:title [string? "title must be present"]
    :body [string? "body must be present"
           #(> (count %) 5) "body must be at least 6 characters"]}))
+
+(def user (make-validator
+  {:email [string? "must provide an email address"
+           #(.includes % "@") "must be a valid email address"]
+   :password [seq "password cannot be empty"]}))

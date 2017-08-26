@@ -30,4 +30,34 @@
       (test/is (seq body-errors) "body errors are present")
       (test/is (string? (first body-errors))))))
 
+(test/deftest test-user-validation
+
+  (test/testing "fails without an email address"
+    (let [validation (validate/user {:password "abcd"})]
+      (test/is (:fails validation))
+      (test/is (string? (first (:email (:errors validation)))))))
+
+  (test/testing "fails with an invalid email address"
+    (let [validation (validate/user {:email "abcd" :password "abcd"})]
+      (test/is (:fails validation))
+      (test/is (string? (first (:email (:errors validation)))))))
+
+  (test/testing "fails without a password"
+    (let [validation (validate/user {:email "test@gmail.com"})]
+      (test/is (:fails validation))
+      (test/is (string? (first (:password (:errors validation)))))))
+
+  (test/testing "fails with an empty password"
+    (let [validation (validate/user {:email "test@gmail.com" :password ""})]
+      (test/is (:fails validation))
+      (test/is (string? (first (:password (:errors validation)))))))
+
+  (test/testing "a valid user passes validation"
+    (let [user {:email "test@test.com" :password "abcde"}
+          validation (validate/user user)]
+      (test/is (= true (:passes validation)))
+      (test/is (= false (:fails validation)))
+      (test/is (empty? (:errors validation))))))
+
 (test-post-validation)
+(test-user-validation)
