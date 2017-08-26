@@ -23,10 +23,14 @@
          (fn [user]
            (.json res (clj->js user)))))
 
-(defn create
+(defn signup
   [req res]
-  (.then (user/insert (js->clj req.body :keywordize-keys true))
-         (fn [user] (.json res (clj->js user)))))
+  (let [user (js->clj req.body :keywordize-keys true)
+        validation (validate/user user)]
+    (if (:fails validation)
+      (do (.status res 422) (.json res (clj->js (:errors validation))))
+      (.then (user/insert (js->clj req.body :keywordize-keys true))
+             (fn [user] (.json res (clj->js user)))))))
 
 (defn update
   [req res]
