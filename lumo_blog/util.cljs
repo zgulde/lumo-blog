@@ -9,6 +9,7 @@
 
 (defn log-info [& items] (println (green (apply str "[INFO] " items))))
 (defn log-success [& items] (println (green (apply str "[SUCCESS] " items))))
+(defn log-warning [& items] (println (yellow (apply str "[WARN] " items))))
 (defn log-error [& items] (println (red (apply str "[ERROR] " items))))
 
 (def fs (js/require "fs"))
