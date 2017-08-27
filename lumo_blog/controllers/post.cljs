@@ -12,7 +12,10 @@
   [req res]
   (.then (post/find req.params.id)
          (fn [post]
-           (.json res (clj->js post)))))
+           (if post
+             (.json res (clj->js post))
+             (do (.status res 404)
+                 (.json res (clj->js {:error "Not Found"})))))))
 
 (defn create [req res]
   (let [post (assoc (js->clj req.body :keywordize-keys true)
@@ -24,10 +27,11 @@
       (do (.status res 422)
           (.json res (clj->js {:errors (:errors validation)}))))))
 
-(defn update
-  [req res]
-  (.then (post/update {:id req.params.id :title req.body.title :body req.body.body})
-         (fn [] (.json res req.body))))
+(defn update [req res]
+  (let [post {:id req.params.id :title req.body.title :body req.body.body}]
+    (.then (post/update post)
+           (fn [rows]
+             (.json res (clj->js post))))))
 
 (defn destroy
   [req res]
