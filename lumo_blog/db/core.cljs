@@ -2,13 +2,21 @@
   (:require [lumo-blog.env :as env]))
 
 (def mysql (js/require "mysql"))
+(def default-opts {:host env/host
+                   :user env/user
+                   :password env/pass
+                   :database env/db})
+
+(defn create-connection
+  ([] (create-connection {}))
+  ([opts]
+   (let [conn (mysql.createConnection (clj->js (merge default-opts opts)))]
+     (.connect conn)
+     conn)))
 
 (def connection
   (mysql.createConnection
-    (clj->js {:host env/host
-              :user env/user
-              :password env/pass
-              :database env/db})))
+    (clj->js default-opts)))
 
 (.connect connection)
 
