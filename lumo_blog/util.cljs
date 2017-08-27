@@ -6,9 +6,12 @@
 (defn green [text] (colorize text 32))
 (defn yellow [text] (colorize text 33))
 (defn blue [text] (colorize text 34))
+(defn purple [text] (colorize text 35))
+(defn cyan [text] (colorize text 36))
 
 (defn log-info [& items] (println (green (apply str "[INFO] " items))))
 (defn log-success [& items] (println (green (apply str "[SUCCESS] " items))))
+(defn log-debug [& items] (println (purple (apply str "[DEBUG] " items))))
 (defn log-warning [& items] (println (yellow (apply str "[WARN] " items))))
 (defn log-error [& items] (println (red (apply str "[ERROR] " items))))
 
