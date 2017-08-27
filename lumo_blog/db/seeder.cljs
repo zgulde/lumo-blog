@@ -40,7 +40,7 @@
 (def query (promisify db/query))
 
 (defn run []
-  (util/log-warning "Starting Seeder...")
+  (util/log-warning "Running Seeder...")
   (util/ps (.resolve js/Promise)
            #(query "SET FOREIGN_KEY_CHECKS = 0")
            #(query "TRUNCATE users")
