@@ -25,6 +25,7 @@
 (def query (promisify db/query))
 
 (defn run []
+  (util/log-warning "Starting Migration...")
   (util/ps (js/Promise.resolve)
            #(query "DROP TABLE IF EXISTS posts")
            #(query "DROP TABLE IF EXISTS users")
@@ -32,7 +33,6 @@
            #(query create-posts)))
 
 (defn -main []
-  (util/log-warning "Starting Migration...")
   (.then (run)
          (fn [] (.end db/connection) (util/log-success "Migrated!"))
          (fn [err] (util/log-error err))))
