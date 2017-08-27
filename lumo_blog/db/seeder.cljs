@@ -4,15 +4,19 @@
             [lumo-blog.db.core :as db]
             [lumo-blog.util :as util]))
 
+(def promisify (.-promisify (js/require "util")))
+
 (def users
   [{:email "zach@codeup.com" :password "codeup"}
    {:email "test@gmail.com" :password "codeup"}])
 
 (def posts
-  [{:title "" :body ""}])
+  [{:title "test post" :body "please ignore"}
+   {:title "The joys of asynchronous operations"
+    :body "It's kinda fun, but can also lead to some nasty-to-debug situations"}
+   {:title "the third" :body "we need more data!"}])
 
 (defn seed-users []
-  (util/log-info "seeding users...")
   (js/Promise.
     (fn [resolve reject]
       (let [pending-requests (atom 0)
@@ -24,7 +28,6 @@
           (.then (user/insert user) done))))))
 
 (defn seed-posts [user-id]
-  (util/log-info "seeding posts...")
   (js/Promise.
     (fn [resolve reject]
       (let [pending-requests (atom 0)
@@ -32,15 +35,22 @@
                    (when (= 0 @pending-requests) (resolve)))]
         (doseq [post posts]
           (swap! pending-requests inc)
-          (.then (post/insert post) done))))))
+          (.then (post/insert (assoc post :user_id user-id)) done))))))
+
+(def query (promisify db/query))
 
 (defn run []
-  (util/ps (seed-users)
+  (util/log-warning "Starting Seeder...")
+  (util/ps (.resolve js/Promise)
+           #(query "SET FOREIGN_KEY_CHECKS = 0")
+           #(query "TRUNCATE users")
+           #(query "TRUNCATE posts")
+           #(query "SET FOREIGN_KEY_CHECKS = 1")
+           #(seed-users)
            (fn [] (user/by-email "zach@codeup.com"))
            (fn [user] (seed-posts (:id user)))))
 
 (defn -main []
-  (util/log-info "Starting Seeder...")
   (.then (run)
          (fn [] (.end db/connection) (util/log-success "Seeder finished!"))
          (fn [err] (util/log-error err))))
