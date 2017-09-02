@@ -36,3 +36,5 @@ requests to test the api.
 - let logged in users change their passwords
 - use something different for sessions, the current cookie package can be
   tampered with client-side, so we shouldn't use this for auth
+- build a frontend
+- better documentation
