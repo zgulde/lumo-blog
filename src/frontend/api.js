@@ -28,5 +28,13 @@ export default {
         throw new Error(`${response.status}: ${response.statusText}`)
       }
     })
+  },
+  login({email, password}) {
+    return fetch(`${env.baseUrl}/login`, {
+      method: 'POST',
+      body: JSON.stringify({email, password})
+    }).then(response => response.json()).then((response) => {
+      return response.success ? response : {success: false}
+    })
   }
 }

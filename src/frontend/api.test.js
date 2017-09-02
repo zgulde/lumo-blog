@@ -83,3 +83,35 @@ describe('api#createPost', () => {
     )
   })
 })
+
+describe('api#login', () => {
+  const user = {email: 'test@gmail.com', password: 'pass'}
+  it('should be defined', () => {
+    expect(api.login).toBeDefined()
+    expect(typeof api.login).toBe('function')
+  })
+  it('submits a POST request to /login', () => {
+    const ctx = nock(env.baseUrl).post('/login').reply(200, user)
+    return api.login({email: '', password: ''}).then(() => expect(ctx.isDone()).toBe(true))
+  })
+  it('submits an email and password', () => {
+    const ctx = nock(env.baseUrl).post('/login', user).reply(200, user)
+    return api.login(user).then(() => expect(ctx.isDone()).toBe(true))
+  })
+  it('returns an object with a success property when login is good', () => {
+    const response = {success: true}
+    const ctx = nock(env.baseUrl).post('/login', user).reply(200, response)
+    return api.login(user).then((response) => {
+      expect(response.success).toBeDefined()
+      expect(response.success).toBe(true)
+    })
+  })
+  it('returns an object with {success: false} when login fails', () => {
+    const response = {error: 'Invalid Username or Password'}
+    const ctx = nock(env.baseUrl).post('/login', user).reply(200, response)
+    return api.login(user).then((response) => {
+      expect(response.success).toBeDefined()
+      expect(response.success).toBe(false)
+    })
+  })
+})
