@@ -2,7 +2,7 @@
   (:require [lumo-blog.db.user :as user]
             [lumo-blog.db.post :as post]
             [lumo-blog.db.core :as db]
-            [lumo-blog.util :as util]))
+            [lumo-blog.util :refer [ppipe] :as util]))
 
 (def promisify (.-promisify (js/require "util")))
 
@@ -41,16 +41,16 @@
 
 (defn run []
   (util/log-warning "Running Seeder...")
-  (util/ps (.resolve js/Promise)
-           #(query "SET FOREIGN_KEY_CHECKS = 0")
-           #(query "TRUNCATE users")
-           #(query "TRUNCATE posts")
-           #(query "SET FOREIGN_KEY_CHECKS = 1")
-           #(seed-users)
-           (fn [] (user/by-email "zach@codeup.com"))
-           (fn [user] (seed-posts (:id user)))
-           #(user/by-email "test@gmail.com")
-           #(post/insert {:title "access-control" :body "foobar" :user_id (:id %)})))
+  (ppipe (.resolve js/Promise)
+         #(query "SET FOREIGN_KEY_CHECKS = 0")
+         #(query "TRUNCATE users")
+         #(query "TRUNCATE posts")
+         #(query "SET FOREIGN_KEY_CHECKS = 1")
+         #(seed-users)
+         (fn [] (user/by-email "zach@codeup.com"))
+         (fn [user] (seed-posts (:id user)))
+         #(user/by-email "test@gmail.com")
+         #(post/insert {:title "access-control" :body "foobar" :user_id (:id %)})))
 
 (defn -main []
   (.then (run)

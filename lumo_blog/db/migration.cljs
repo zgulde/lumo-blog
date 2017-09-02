@@ -1,6 +1,6 @@
 (ns lumo-blog.db.migration
   (:require [lumo-blog.db.core :as db]
-            [lumo-blog.util :as util]))
+            [lumo-blog.util :refer [ppipe] :as util]))
 
 (def promisify (.-promisify (js/require "util")))
 
@@ -26,11 +26,11 @@
 
 (defn run []
   (util/log-warning "Running Migration...")
-  (util/ps (js/Promise.resolve)
-           #(query "DROP TABLE IF EXISTS posts")
-           #(query "DROP TABLE IF EXISTS users")
-           #(query create-users)
-           #(query create-posts)))
+  (ppipe (js/Promise.resolve)
+         #(query "DROP TABLE IF EXISTS posts")
+         #(query "DROP TABLE IF EXISTS users")
+         #(query create-users)
+         #(query create-posts)))
 
 (defn -main []
   (.then (run)
