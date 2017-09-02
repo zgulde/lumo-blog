@@ -1,6 +1,7 @@
 (ns lumo-blog.test.validation
   (:require [lumo-blog.validation :as validate]
-            [cljs.test :as test]))
+            [cljs.test :as test]
+            [lumo-blog.util :as util]))
 
 (def good-post {:title "blog post" :body "lorem ipsum dolor sit amet"})
 (def bad-post {:title ""})
@@ -61,5 +62,11 @@
       (test/is (= false (:fails validation)))
       (test/is (empty? (:errors validation))))))
 
-(test-post-validation)
-(test-user-validation)
+(defn run []
+  (util/log-info "Running validation tests...")
+  (test-post-validation)
+  (test-user-validation)
+  (util/log-info "Finished validation tests!"))
+
+(defn -main []
+  (run))

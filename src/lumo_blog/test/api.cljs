@@ -1,5 +1,3 @@
-; 19 21 41 42 62
-
 (ns lumo-blog.test.api
   (:require [cljs.test :as test]
             [lumo-blog.server :refer [configure-app]]
@@ -14,10 +12,6 @@
                         (clj->js {:jar true
                                   :baseUrl "http://localhost:1312"
                                   :json true})))
-
-(def express (js/require "express"))
-(def app (configure-app (express)))
-(def server (.listen app 1312 #(util/log-info "server started on port 1312!")))
 
 (defn- req [opts]
   (js/Promise.
@@ -146,20 +140,26 @@
            (test/is (string? (first (:body body)))))
          #(logout)))
 
+(defn run []
+  (util/log-info "Running api tests...")
+  (let [express (js/require "express")
+        app (configure-app (express))
+        server (.listen app 1312 #(util/log-info "server started on port 1312!"))]
+    (.catch (ppipe (migration/run)
+                   #(seeder/run)
+                   ;;
+                   #(test-post-updates-are-validated)
+                   #(test-authentication)
+                   #(test-posts-index)
+                   #(test-account)
+                   #(test-post-crud)
+                   #(test-login-with-nonexistent-email)
+                   #(test-post-access-control)
+                   ;;
+                   #(.end db/connection)
+                   #(.close server)
+                   #(util/log-info "Finished api tests!"))
+            (fn [err] (util/log-error err)))))
+
 (defn -main []
-  (util/log-info "Starting...")
-  (.catch (ppipe (migration/run)
-                 #(seeder/run)
-                 ;;
-                 #(test-post-updates-are-validated)
-                 #(test-authentication)
-                 #(test-posts-index)
-                 #(test-account)
-                 #(test-post-crud)
-                 #(test-login-with-nonexistent-email)
-                 #(test-post-access-control)
-                 ;;
-                 #(.end db/connection)
-                 #(.close server)
-                 #(util/log-info "api tests finished!"))
-          (fn [err] (util/log-error err))))
+  (run))
