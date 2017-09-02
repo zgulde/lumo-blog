@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint src/**/*.js",
     "test": "jest",
-    "lint": "eslint src/**/*.js"
+    "test:watch": "npm test -- --watch"
   },
   "keywords": [],
   "author": "",
