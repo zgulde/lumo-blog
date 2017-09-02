@@ -62,16 +62,20 @@ describe('<PostForm />', () => {
     expect(form.find('.alert').text()).toMatch(/body must be present/)
   })
   it('highlights title input if it has an error', () => {
-    const errors = {title: ['title must be present'], body: ['body must be present']}
+    const errors = {title: ['title must be present']}
     const form = shallow(<PostForm errors={errors} />)
     const titleInput = form.find('input[name="title"]')
     expect(titleInput.parent().hasClass('has-error')).toBe(true)
   })
   it('highlights the body input if it has an error', () => {
-    const errors = {title: ['title must be present'], body: ['body must be present']}
+    const errors = {body: ['body must be present']}
     const form = shallow(<PostForm errors={errors} />)
     const bodyInput = form.find('input[name="body"]')
     expect(bodyInput.parent().hasClass('has-error')).toBe(true)
+  })
+  it('doesn\'t highlight fields if there are no errors', () => {
+    const form = shallow(<PostForm />)
+    expect(form.find('.has-error').length).toBe(0)
   })
   it('renders with a class of "pending" if requestPending prop is passed', () => {
     const pendingForm = shallow(<PostForm requestPending={true} />)

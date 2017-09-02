@@ -24,6 +24,9 @@ class PostForm extends Component {
   }
 
   render() {
+    const {errors} = this.props
+    const titleHasError = errors && errors.title
+    const bodyHasError = errors && errors.body
     return (
       <form className={'PostForm' + (this.props.requestPending ? ' pending' : '')} onSubmit={this.onSubmit}>
         {this.props.errors &&
@@ -35,11 +38,11 @@ class PostForm extends Component {
                 .map((error, i) => <li key={i}>{error}</li>)}
             </ul>
           </div>}
-        <div className={'form-group ' + (this.errors && this.errors.title) ? 'has-error' : ''}>
+        <div className={'form-group' + (titleHasError ? ' has-error' : '')}>
           <label htmlFor="title">Title</label>
           <input onChange={this.handleChange} className="form-control" type="text" id="title" name="title" />
         </div>
-        <div className={'form-group ' + (this.errors && this.errors.title) ? 'has-error' : ''}>
+        <div className={'form-group' + (bodyHasError ? ' has-error' : '')}>
           <label htmlFor="body">Content</label>
           <input onChange={this.handleChange} className="form-control" type="text" id="body" name="body" />
         </div>
