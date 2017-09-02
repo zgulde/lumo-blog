@@ -1,6 +1,6 @@
 (ns lumo-blog.controllers.user
   (:require [lumo-blog.db.user :as user]
-            [lumo-blog.util :refer [assign]]
+            [lumo-blog.util :refer [assign] :as util]
             [lumo-blog.validation :as validate]))
 
 (defn account [req res]
@@ -12,7 +12,7 @@
          (fn [[success id]]
            (if success (do (assign req.session {:user_id id})
                            (.json res (clj->js {:success true})))
-               (.json res (clj->js {:error "invalid username or password"}))))))
+               (.json res (clj->js {:error "invalid email or password"}))))))
 
 (defn logout [req res]
   (do (assign req.session {:user_id nil})

@@ -29,8 +29,12 @@
 
 (defn check-password [email plaintext]
   (.then (by-email email)
-         (fn [user] (.then (util/pw-check plaintext (:password user))
-                           (fn [success] [success (:id user)])))))
+         (fn [user]
+           (if user
+             (.then (util/pw-check plaintext (:password user))
+                    (fn [success]
+                      [success (:id user)]))
+             [false nil]))))
 
 (defn all []
   (js/Promise.

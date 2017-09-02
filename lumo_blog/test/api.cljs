@@ -37,6 +37,7 @@
 (defn- login [email password]
   (req
     {:method "post" :url "/login" :body {:email email :password password}}))
+(defn- logout [] (req {:method "post" :url "/logout"}))
 
 (defn test-authentication []
   (.all js/Promise
@@ -52,11 +53,19 @@
            (test/is (seq posts) "/posts returns an array of posts")
            (test/is (every? #(:passes (validate/post %)) posts)))))
 
+(defn test-login-with-nonexistent-email []
+  (util/ps (login "notavalid@email" "nopass")
+           (fn [[res body]]
+             (test/is (string? (:error body)))
+             (test/is (.test (js/RegExp. "invalid email" "i") (:error body))))))
+
 (defn test-account []
   (util/ps (login "zach@codeup.com" "codeup")
            #(req {:method "get" :url "/account"})
            (fn [[res user]]
-             (test/is (= "zach@codeup.com" (:email user))))))
+             (test/is (= "zach@codeup.com" (:email user)))
+             (test/is (.test (js/RegExp. "\\d+") (:id user))))
+           #(logout)))
 
 (defn test-post-crud []
   (util/ps (login "zach@codeup.com" "codeup")
@@ -111,6 +120,7 @@
                    #(test-posts-index)
                    #(test-account)
                    #(test-post-crud)
+                   #(test-login-with-nonexistent-email)
                    ;;
                    #(.end db/connection)
                    #(.close server)
