@@ -6,9 +6,11 @@
 
 (def body-parser (js/require "body-parser"))
 (def cookie-session (js/require "cookie-session"))
+(def static (.-static (js/require "express")))
 
 (defn configure-app [app]
   ;; middlewares
+  (.use app (static "public"))
   (.use app (.json body-parser))
   (.use app (cookie-session (clj->js {:name "my-session" :secret "secret"})))
   (.use app mw/error-handler)
