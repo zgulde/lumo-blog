@@ -20,4 +20,4 @@ case $command in
     *) echo 'start|serve|run - test - migrate - seed'; exit 1;;
 esac
 
-$BASE_DIR/node_modules/.bin/lumo -m "${main}.${ns}" $@
+$BASE_DIR/node_modules/.bin/lumo -c src -m "${main}.${ns}" $@
