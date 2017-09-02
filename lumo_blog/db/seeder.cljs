@@ -48,7 +48,9 @@
            #(query "SET FOREIGN_KEY_CHECKS = 1")
            #(seed-users)
            (fn [] (user/by-email "zach@codeup.com"))
-           (fn [user] (seed-posts (:id user)))))
+           (fn [user] (seed-posts (:id user)))
+           #(user/by-email "test@gmail.com")
+           #(post/insert {:title "access-control" :body "foobar" :user_id (:id %)})))
 
 (defn -main []
   (.then (run)

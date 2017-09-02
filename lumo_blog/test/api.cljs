@@ -109,20 +109,40 @@
            (fn [id] (req {:method "get" :url (str "/posts/" id)}))
            (fn [[res body]]
              (test/is (= 404 res.statusCode) "404 for trying to access a missing post")
-             (test/is (string? (:error body)) "tring to access a missing post returns a body with an error"))))
+             (test/is (string? (:error body)) "tring to access a missing post returns a body with an error"))
+           #(logout)))
+
+; access control
+(defn test-post-access-control []
+  (util/ps (login "zach@codeup.com" "codeup")
+           (fn []
+             (.then (req {:url "/posts" :method "get"})
+                    (fn [[res posts]] (.then (req {:url "/account" :method "get"})
+                                             (fn [[res user]] [posts (:id user)])))))
+           (fn [[posts user-id]] (first (filter #(not (= user-id (:user_id %))) posts)))
+           (fn [restricted-post] ; try to modify a resource that isn't ours
+             (req {:method "put" :url (str "/posts/" (:id restricted-post))
+                   :body {:title "altered title" :body "altered body"}}))
+           (fn [[res body]]
+             (test/is (= 403 res.statusCode))
+             (test/is (string? (:error body))))))
 
 (defn -main []
   (util/log-info "Starting...")
   (.catch (util/ps (migration/run)
                    #(seeder/run)
                    ;;
-                   #(test-authentication)
-                   #(test-posts-index)
-                   #(test-account)
-                   #(test-post-crud)
-                   #(test-login-with-nonexistent-email)
+
+                   ; #(test-authentication)
+                   ; #(test-posts-index)
+                   ; #(test-account)
+                   ; #(test-post-crud)
+                   ; #(test-login-with-nonexistent-email)
+
+                   #(test-post-access-control)
+
                    ;;
                    #(.end db/connection)
                    #(.close server)
-                   #(util/log-success "api tests done!"))
+                   #(util/log-info "api tests finished!"))
           (fn [err] (util/log-error err))))
