@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint src/**/*.js"
   },
   "keywords": [],
   "author": "",
@@ -44,5 +45,9 @@
     "transform": {
       "^.+\\.js$": "babel-jest"
     }
+  },
+  "devDependencies": {
+    "eslint": "^4.6.0",
+    "eslint-plugin-react": "^7.3.0"
   }
 }
