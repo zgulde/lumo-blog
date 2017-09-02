@@ -2,3 +2,4 @@ node_modules/
 npm-debug.log
 src/lumo_blog/env.cljs
 src/.env.js
+coverage
