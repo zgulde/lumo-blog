@@ -1,5 +1,5 @@
 node_modules/
 npm-debug.log
 src/lumo_blog/env.cljs
-src/.env.js
+src/frontend/.env.js
 coverage

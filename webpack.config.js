@@ -6,7 +6,7 @@ const webpack = require('webpack');
 module.exports = {
   // where our app "starts"
   // add the promise and fetch polyfill first
-  entry: ['promise-polyfill', 'whatwg-fetch', './src/index.js'],
+  entry: ['promise-polyfill', 'whatwg-fetch', './src/frontend/index.js'],
   // where to put the transpiled javascript
   output: {
     path: path.resolve(__dirname, 'public'),
