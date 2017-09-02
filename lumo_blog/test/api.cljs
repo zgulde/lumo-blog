@@ -112,33 +112,54 @@
              (test/is (string? (:error body)) "tring to access a missing post returns a body with an error"))
            #(logout)))
 
-; access control
 (defn test-post-access-control []
   (util/ps (login "zach@codeup.com" "codeup")
+           ; get the posts and our user id
            (fn []
              (.then (req {:url "/posts" :method "get"})
                     (fn [[res posts]] (.then (req {:url "/account" :method "get"})
                                              (fn [[res user]] [posts (:id user)])))))
+           ; find a post that doesn't belong to us
            (fn [[posts user-id]] (first (filter #(not (= user-id (:user_id %))) posts)))
-           (fn [restricted-post] ; try to modify a resource that isn't ours
+           ; and try to modify it
+           (fn [restricted-post]
              (req {:method "put" :url (str "/posts/" (:id restricted-post))
                    :body {:title "altered title" :body "altered body"}}))
            (fn [[res body]]
              (test/is (= 403 res.statusCode))
              (test/is (string? (:error body)))
-             (test/is (.test (js/RegExp. "permission") (:error body))))))
+             (test/is (.test (js/RegExp. "permission") (:error body))))
+           #(logout)))
+
+(defn test-post-updates-are-validated []
+  (util/ps (login "zach@codeup.com" "codeup")
+           (fn []
+             (.then (req {:url "/posts" :method "get"})
+                    (fn [[res posts]] (.then (req {:url "/account" :method "get"})
+                                             (fn [[res user]] [posts (:id user)])))))
+           (fn [[posts user-id]] (first (filter #(= user-id (:user_id %)) posts)))
+           (fn [post] (req {:method "put" :url (str "/posts/" (:id post))
+                            :body {}}))
+           (fn [[res body]]
+             (test/is (= 422 res.statusCode))
+             (test/is (string? (first (:title body))))
+             (test/is (string? (first (:body body)))))))
 
 (defn -main []
   (util/log-info "Starting...")
   (.catch (util/ps (migration/run)
                    #(seeder/run)
                    ;;
-                   #(test-authentication)
-                   #(test-posts-index)
-                   #(test-account)
-                   #(test-post-crud)
-                   #(test-login-with-nonexistent-email)
-                   #(test-post-access-control)
+
+                   #(test-post-updates-are-validated)
+
+                   ; #(test-authentication)
+                   ; #(test-posts-index)
+                   ; #(test-account)
+                   ; #(test-post-crud)
+                   ; #(test-login-with-nonexistent-email)
+                   ; #(test-post-access-control)
+
                    ;;
                    #(.end db/connection)
                    #(.close server)

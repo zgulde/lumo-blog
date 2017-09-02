@@ -28,10 +28,13 @@
           (.json res (clj->js {:errors (:errors validation)}))))))
 
 (defn update [req res]
-  (let [post {:id req.params.id :title req.body.title :body req.body.body}]
-    (.then (post/update post)
-           (fn [rows]
-             (.json res (clj->js post))))))
+  (let [post {:id req.params.id :title req.body.title :body req.body.body}
+        validation (validate/post post)]
+    (if (:passes validation)
+      (.then (post/update post)
+             (fn [rows]
+               (.json res (clj->js post))))
+      (do (.status res 422) (.json res (clj->js (:errors validation)))))))
 
 (defn destroy
   [req res]
