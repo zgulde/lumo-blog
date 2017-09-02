@@ -33,7 +33,6 @@ requests to test the api.
 
 ## TODO
 
-- access control for posts
 - validate post updates
 - let logged in users change their passwords
 - use something different for sessions, the current cookie package can be

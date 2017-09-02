@@ -1,5 +1,6 @@
 (ns lumo-blog.middlewares
-  (:require [lumo-blog.util :refer [assign]]))
+  (:require [lumo-blog.util :refer [assign] :as util]
+            [lumo-blog.db.post :as post]))
 
 (defn error-handler
   [err req res next]
@@ -14,5 +15,13 @@
 
 (defn post-access-control
   [req res next]
-  (if-not (= req.params.id req.session.user_id)
-    (do (.status res 403) (.json res (clj->js {:error "you don't have permission for that resource"})))))
+  (let [post-id req.params.id]
+    (util/ps (post/find post-id)
+             (fn [post]
+               (if (and post (= req.session.user_id (:user_id post)))
+                 (next)
+                 (do (.status res 403)
+                     (.json res (clj->js
+                                  {:error (if post
+                                            "you don't have permission for that resource"
+                                            "post does not exist")}))))))))

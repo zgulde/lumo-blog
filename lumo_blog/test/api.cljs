@@ -125,22 +125,20 @@
                    :body {:title "altered title" :body "altered body"}}))
            (fn [[res body]]
              (test/is (= 403 res.statusCode))
-             (test/is (string? (:error body))))))
+             (test/is (string? (:error body)))
+             (test/is (.test (js/RegExp. "permission") (:error body))))))
 
 (defn -main []
   (util/log-info "Starting...")
   (.catch (util/ps (migration/run)
                    #(seeder/run)
                    ;;
-
-                   ; #(test-authentication)
-                   ; #(test-posts-index)
-                   ; #(test-account)
-                   ; #(test-post-crud)
-                   ; #(test-login-with-nonexistent-email)
-
+                   #(test-authentication)
+                   #(test-posts-index)
+                   #(test-account)
+                   #(test-post-crud)
+                   #(test-login-with-nonexistent-email)
                    #(test-post-access-control)
-
                    ;;
                    #(.end db/connection)
                    #(.close server)

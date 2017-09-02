@@ -23,6 +23,6 @@
   (.get app "/posts" post-controller/index)
   (.get app "/posts/:id" post-controller/show)
   (.post app "/posts" mw/logged-in post-controller/create)
-  (.put app "/posts/:id" mw/logged-in post-controller/update)
-  (.delete app "/posts/:id" mw/logged-in post-controller/destroy)
+  (.put app "/posts/:id" mw/logged-in mw/post-access-control post-controller/update)
+  (.delete app "/posts/:id" mw/logged-in mw/post-access-control post-controller/destroy)
   app)
