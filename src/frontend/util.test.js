@@ -23,4 +23,11 @@ describe('merge(...objects)', () => {
     expect(object1).toEqual({foo: 'bar'})
     expect(object2).toEqual({baz: 'pony'})
   })
+  it('Handles nested objects', () => {
+    const initial = {nested: {foo: 'bar', baz: 'pony'}}
+    const mergeMe = {nested: {baz: 'quux'}}
+    expect(merge(initial, mergeMe)).toEqual({
+      nested: {foo: 'bar', baz: 'quux'}
+    })
+  })
 })
