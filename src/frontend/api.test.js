@@ -8,7 +8,7 @@ it('should be defined', () => {
 })
 
 describe('api#getPosts', () => {
-  it('should fetch posts', async (done) => {
+  it('should fetch posts', (done) => {
     nock(env.baseUrl).get('/posts').reply(200, [{title: 'foo', body: 'bar'}])
     api.getPosts().then(
       posts => {
@@ -16,6 +16,7 @@ describe('api#getPosts', () => {
         done()
       },
       error => {
+        // eslint-disable-next-line no-console
         console.error(error)
         done()
       })
@@ -56,7 +57,7 @@ describe('api#createPost', () => {
       title: 'title must be present',
       body: 'body must be at least 6 characters'
     }
-    const scope = nock(env.baseUrl)
+    nock(env.baseUrl)
       .post('/posts', post)
       .reply(422, errors)
     return api.createPost(post).then(result => {
@@ -69,13 +70,13 @@ describe('api#createPost', () => {
     })
   })
   it('rejects on a 500 response', () => {
-    const scope = nock(env.baseUrl)
+    nock(env.baseUrl)
       .post('/posts', post)
       .reply(500)
     return expect(api.createPost(post)).rejects.toBeDefined()
   })
   it('returns an object with the new post if everything goes well', () => {
-    const scope = nock(env.baseUrl)
+    nock(env.baseUrl)
       .post('/posts', post)
       .reply(200, merge(post, {user_id: 1}))
     return expect(api.createPost(post)).resolves.toEqual(
@@ -100,7 +101,7 @@ describe('api#login', () => {
   })
   it('returns an object with a success property when login is good', () => {
     const response = {success: true}
-    const ctx = nock(env.baseUrl).post('/login', user).reply(200, response)
+    nock(env.baseUrl).post('/login', user).reply(200, response)
     return api.login(user).then((response) => {
       expect(response.success).toBeDefined()
       expect(response.success).toBe(true)
@@ -108,7 +109,7 @@ describe('api#login', () => {
   })
   it('returns an object with {success: false} when login fails', () => {
     const response = {error: 'Invalid Username or Password'}
-    const ctx = nock(env.baseUrl).post('/login', user).reply(200, response)
+    nock(env.baseUrl).post('/login', user).reply(200, response)
     return api.login(user).then((response) => {
       expect(response.success).toBeDefined()
       expect(response.success).toBe(false)

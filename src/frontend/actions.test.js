@@ -1,6 +1,7 @@
 import * as actions from './actions'
 
 jest.mock('./api', () => ({
+  // eslint-disable-next-line no-unused-vars
   login: ({email, password}) => Promise.resolve({success: true})
 }))
 
