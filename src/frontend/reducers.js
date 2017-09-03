@@ -5,14 +5,29 @@ export const initialState = {
   pendingRequests: {
     login: false,
     logout: false,
-    posts: false
-  }
+    posts: false,
+  },
+  errors: {
+    network: {
+      login: null,
+      logout: null,
+      posts: null
+    },
+  },
 }
 
 export const rootReducer = (state = initialState, action) => {
   switch (action.type) {
+    case 'FETCH_POSTS_PENDING':
+      return merge(state, {
+        pendingRequests: {posts: true},
+        errors: {network: {posts: null}}
+      })
     case 'LOGIN_PENDING':
-      return merge(state, {pendingRequests: {login: true}})
+      return merge(state, {
+        pendingRequests: {login: true}},
+        {errors: {network: {login: null}}
+      })
     case 'LOGIN_FULFILLED':
     case 'LOGIN_REJECTED':
       return merge(state, {
@@ -20,7 +35,10 @@ export const rootReducer = (state = initialState, action) => {
         loggedIn: action.payload.success
       })
     case 'LOGOUT_PENDING':
-      return merge(state, {pendingRequests: {logout: true}})
+      return merge(state, {
+        pendingRequests: {logout: true},
+        errors: {network: {logout: null}}
+      })
     case 'LOGOUT_FULFILLED':
     case 'LOGOUT_REJECTED':
       return merge(state, {pendingRequests: {logout: false}})

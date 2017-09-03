@@ -13,6 +13,11 @@ describe('LOGIN actions', () => {
     const state = rootReducer(initialState, {type: 'LOGIN_PENDING'})
     expect(state.pendingRequests.login).toBe(true)
   })
+  it('Clears network errors on _PENDING', () => {
+    const initial = merge(initialState, {errors: {network: {login: 'error'}}})
+    const state = rootReducer(initial, {type: 'LOGIN_PENDING'})
+    expect(state.errors.network.login).toBe(null)
+  })
   it('request is no longer pending on _FULFILLED or _REJECTED', () => {
     const initial = merge(initialState, {pendingRequests: {login: true}})
     expect(initial.pendingRequests.login).toBe(true)
@@ -32,10 +37,30 @@ describe('LOGOUT actions', () => {
     const state = rootReducer(initialState, {type: 'LOGOUT_PENDING'})
     expect(state.pendingRequests.logout).toBe(true)
   })
+  it('Clears network errors on _PENDING', () => {
+    const initial = merge(initialState, {errors: {network: {logout: 'error'}}})
+    const state = rootReducer(initial, {type: 'LOGOUT_PENDING'})
+    expect(state.errors.network.logout).toBe(null)
+  })
   it('request is no longer pending on _FULFILLED or _REJECTED', () => {
     const initial = merge(initialState, {pendingRequests: {logout: true}})
     expect(initial.pendingRequests.logout).toBe(true)
     const state = rootReducer(initial, {type: 'LOGOUT_FULFILLED'})
     expect(state.pendingRequests.logout).toBe(false)
   })
+})
+
+describe('FETCH_POSTS', () => {
+  it('handles _PENDING', () => {
+    const state = rootReducer(initialState, {type: 'FETCH_POSTS_PENDING'})
+    expect(state.pendingRequests.posts).toBe(true)
+  })
+  it('Clears network errors on _PENDING', () => {
+    const initial = merge(initialState, {errors: {network: {posts: 'error'}}})
+    const state = rootReducer(initial, {type: 'FETCH_POSTS_PENDING'})
+    expect(state.errors.network.posts).toBe(null)
+  })
+  // it('handles _REJECTED', () => {
+  //   const state = rootReducer(initialState, {type: 'FETCH_POSTS_REJECTED'})
+  // })
 })
