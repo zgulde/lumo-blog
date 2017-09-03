@@ -20,4 +20,8 @@ describe('<PostList />', () => {
     const wrapper = shallow(<PostList posts={[]} />)
     expect(wrapper.hasClass('PostList')).toBe(true)
   })
+  it('shows an error when network errors are present', () => {
+    const wrapper = shallow(<PostList networkError='Internal Server Error' />)
+    expect(wrapper.find('h2').text()).toMatch(/went wrong/)
+  })
 })

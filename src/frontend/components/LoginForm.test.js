@@ -58,4 +58,8 @@ describe('<LoginForm />', () => {
     const form = shallow(<LoginForm />)
     expect(form.hasClass('pending')).toBe(false);
   })
+  it('shows an error when networkError is present', () => {
+    const form = shallow(<LoginForm networkError='Internal Server Error' />)
+    expect(form.find('h2').text()).toMatch(/went wrong/i)
+  })
 })

@@ -23,6 +23,9 @@ export default class extends React.Component {
   }
 
   render() {
+    if (this.props.networkError) {
+      return <h2>We're sorry, something went wrong.</h2>
+    }
     return (
       <form className={'LoginForm' + (this.props.requestPending ? ' pending' : '')} onSubmit={this.handleSubmit}>
         {this.props.error &&
