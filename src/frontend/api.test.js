@@ -78,9 +78,9 @@ describe('api#createPost', () => {
   it('returns an object with the new post if everything goes well', () => {
     nock(env.baseUrl)
       .post('/posts', post)
-      .reply(200, merge(post, {user_id: 1}))
+      .reply(200, {...post, user_id: 1})
     return expect(api.createPost(post)).resolves.toEqual(
-      {success: true, post: merge(post, {user_id: 1})}
+      {success: true, post: {...post, user_id: 1}}
     )
   })
 })
