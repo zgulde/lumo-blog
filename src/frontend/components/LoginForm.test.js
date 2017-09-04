@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import LoginForm from './LoginForm'
+import { LoginForm, mapDispatchToProps } from './LoginForm'
 
 describe('<LoginForm />', () => {
   it('renders with a class of .LoginForm', () => {
@@ -61,5 +61,16 @@ describe('<LoginForm />', () => {
   it('shows an error when networkError is present', () => {
     const form = shallow(<LoginForm networkError='Internal Server Error' />)
     expect(form.find('h2').text()).toMatch(/went wrong/i)
+  })
+})
+
+describe('mapDispatchToProps', () => {
+  it('should be defined', () => {
+    expect(mapDispatchToProps).toBeDefined()
+  })
+  it('provides a handleSubmit function', () => {
+    const dispatch = jest.fn()
+    const props = mapDispatchToProps(dispatch)
+    expect(props.handleSubmit).toBeDefined()
   })
 })

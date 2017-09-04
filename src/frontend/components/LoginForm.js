@@ -1,6 +1,8 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import * as actions from '../actions'
 
-export default class extends React.Component {
+export class LoginForm extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -45,3 +47,9 @@ export default class extends React.Component {
     )
   }
 }
+
+export const mapDispatchToProps = (dispatch) => ({
+  handleSubmit: ({email, password}) => actions.login({email, password})
+})
+
+export default connect(null, mapDispatchToProps)(LoginForm)
