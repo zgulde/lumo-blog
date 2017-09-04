@@ -14,6 +14,7 @@ export const initialState = {
       posts: null
     },
   },
+  posts: null
 }
 
 export const rootReducer = (state = initialState, action) => {
