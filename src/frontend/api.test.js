@@ -1,7 +1,6 @@
 import api from './api'
 import nock from 'nock'
 import env from './.env'
-import {merge} from './util'
 
 it('should be defined', () => {
   expect(api).toBeDefined()
