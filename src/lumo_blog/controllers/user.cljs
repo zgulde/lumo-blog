@@ -9,9 +9,9 @@
 
 (defn login [req res]
   (.then (user/check-password req.body.email req.body.password)
-         (fn [[success id]]
-           (if success (do (assign req.session {:user_id id})
-                           (.json res (clj->js {:success true})))
+         (fn [[success user]]
+           (if success (do (assign req.session {:user_id (:id user)})
+                           (.json res (clj->js {:success true :user user})))
                (.json res (clj->js {:error "invalid email or password"}))))))
 
 (defn logout [req res]

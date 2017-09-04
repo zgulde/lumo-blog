@@ -57,8 +57,8 @@
   (ppipe (login "zach@codeup.com" "codeup")
          #(req {:method "get" :url "/account"})
          (fn [[res user]]
-           (test/is (= "zach@codeup.com" (:email user)))
-           (test/is (.test (js/RegExp. "\\d+") (:id user))))
+           (test/is (= "zach@codeup.com" (:email user)) "account page returns an email")
+           (test/is (.test (js/RegExp. "\\d+") (:id user)) "account page returns an id for the user"))
          #(logout)))
 
 (defn test-post-crud []
@@ -96,8 +96,8 @@
            (.then
              (req {:method "delete" :url (str "/posts/" (:id post)) :json false})
              (fn [[res body]]
-               (test/is (= 200 res.statusCode))
-               (test/is (= "ok" body))
+               (test/is (= 200 res.statusCode) "200 is returned after DELETE request")
+               (test/is (= "ok" body) "body of a DELETE request is 'ok'")
                (:id post))))
          ;; and make sure it's gone
          (fn [id] (req {:method "get" :url (str "/posts/" id)}))
@@ -135,10 +135,18 @@
          (fn [post] (req {:method "put" :url (str "/posts/" (:id post))
                           :body {}}))
          (fn [[res body]]
-           (test/is (= 422 res.statusCode))
-           (test/is (string? (first (:title body))))
-           (test/is (string? (first (:body body)))))
+           (test/is (= 422 res.statusCode) "bad update request sends back a 422")
+           (test/is (string? (first (:title body))) "bad update request gives a title error message")
+           (test/is (string? (first (:body body))) "bad update request gives a body error"))
          #(logout)))
+
+(defn test-login-returns-user-object []
+  (.then (login "zach@codeup.com" "codeup")
+         (fn [[res body]]
+           (test/is (= true (:success body)))
+           (let [user (:user body)]
+             (test/is (string? (:email user)))
+             (test/is (.test (js/RegExp. "\\d+") (:id user)) "login response has an id for the user")))))
 
 (defn run []
   (util/log-info "Running api tests...")
@@ -155,6 +163,7 @@
                    #(test-post-crud)
                    #(test-login-with-nonexistent-email)
                    #(test-post-access-control)
+                   #(test-login-returns-user-object)
                    ;;
                    #(.end db/connection)
                    #(.close server)

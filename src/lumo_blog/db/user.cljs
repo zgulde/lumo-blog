@@ -33,7 +33,7 @@
            (if user
              (.then (util/pw-check plaintext (:password user))
                     (fn [success]
-                      [success (:id user)]))
+                      [success user]))
              [false nil]))))
 
 (defn all []
