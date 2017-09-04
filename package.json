@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "concurrently webpack-dev-server './app start'",
     "lint": "eslint src/**/*.js",
     "test": "jest",
     "test:report": "jest --coverage; open coverage/lcov-report/index.html"

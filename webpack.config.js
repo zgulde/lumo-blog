@@ -41,12 +41,12 @@ module.exports = {
     port: 1313,
     compress: true,
     watchContentBase: true,
-    // // send requests that start with "/api" to our api server
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://localhost:3000',
-    //     pathRewrite: {'^/api': ''}
-    //   }
-    // }
+    // send requests that start with "/api" to our api server
+    proxy: {
+      '/api': {
+        target: 'http://localhost:1312',
+        pathRewrite: {'^/api': ''}
+      }
+    }
   }
 };
