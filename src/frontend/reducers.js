@@ -3,7 +3,7 @@ import {createStore, applyMiddleware} from 'redux'
 import promiseMiddleware from 'redux-promise-middleware'
 
 export const initialState = {
-  loggedIn: false,
+  loggedInUser: null,
   pendingRequests: {
     login: false,
     logout: false,
@@ -45,7 +45,8 @@ export const rootReducer = (state = initialState, action) => {
     case 'LOGIN_REJECTED':
       return merge(state, {
         pendingRequests: {login: false},
-        loggedIn: action.payload.success
+        errors: {network: {login: action.type === 'LOGIN_REJECTED' ? true : null}},
+        loggedInUser: action.payload.success ? action.payload.user : null
       })
     case 'LOGOUT_PENDING':
       return merge(state, {

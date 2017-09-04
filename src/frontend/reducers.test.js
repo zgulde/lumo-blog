@@ -7,7 +7,10 @@ describe('rootReducer', () => {
   })
 })
 describe('LOGIN actions', () => {
-  const loginSuccess = {type: 'LOGIN_FULFILLED', payload: {success: true}}
+  const loginSuccess = {
+    type: 'LOGIN_FULFILLED',
+    payload: {success: true, user: {id: 1, email: 'zach@codeup.com'}}
+  }
   const loginFailed = {type: 'LOGIN_FULFILLED', payload: {success: false}}
   it('handles _PENDING', () => {
     const state = rootReducer(initialState, {type: 'LOGIN_PENDING'})
@@ -24,11 +27,11 @@ describe('LOGIN actions', () => {
     const state = rootReducer(initial, loginSuccess)
     expect(state.pendingRequests.login).toBe(false)
   })
-  it('sets the loggedIn key based off of the payload of _FULFILLED', () => {
+  it('sets the loggedInUser state based off of the payload of _FULFILLED', () => {
     let state = rootReducer(initialState, loginSuccess)
-    expect(state.loggedIn).toBe(true)
+    expect(state.loggedInUser).toEqual(loginSuccess.payload.user)
     state = rootReducer(initialState, loginFailed)
-    expect(state.loggedIn).toBe(false)
+    expect(state.loggedInUser).toEqual(null)
   })
 })
 
