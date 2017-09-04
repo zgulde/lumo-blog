@@ -5,3 +5,8 @@ export const login = (email, password) => ({
   payload: api.login({email, password})
 })
 export const logout = () => ({type: 'LOGOUT'})
+
+export const fetchPosts = () => ({
+  type: 'FETCH_POSTS',
+  payload: api.getPosts()
+})
