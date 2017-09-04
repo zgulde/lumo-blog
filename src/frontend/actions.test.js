@@ -8,7 +8,7 @@ jest.mock('./api', () => ({
 
 describe('login', () => {
   it('creates a login action', () => {
-    const action = actions.login()
+    const action = actions.login({email: 'foo', password: 'bar'})
     expect(action.type).toBe('LOGIN')
     return expect(action.payload).resolves.toHaveProperty('success')
   })
