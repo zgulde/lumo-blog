@@ -12,7 +12,10 @@
          (fn [[success user]]
            (if success (do (assign req.session {:user_id (:id user)})
                            (.json res (clj->js {:success true :user user})))
-               (.json res (clj->js {:error "invalid email or password"}))))))
+             (.json res (clj->js {:error "invalid email or password"}))))
+         (fn [error]
+           (util/log-error error)
+           (.json res (clj->js {:error "invalid email or password"})))))
 
 (defn logout [req res]
   (do (assign req.session {:user_id nil})
