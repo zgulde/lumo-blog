@@ -1,4 +1,6 @@
 import {merge} from './util'
+import {createStore, applyMiddleware} from 'redux'
+import promiseMiddleware from 'redux-promise-middleware'
 
 export const initialState = {
   loggedIn: false,
@@ -57,3 +59,19 @@ export const rootReducer = (state = initialState, action) => {
       return state
   }
 }
+
+// see http://redux.js.org/docs/advanced/Middleware.html
+const logger = store => next => action => {
+  console.group(action.type) // eslint-disable-line no-console
+  console.info('dispatching', action) // eslint-disable-line no-console
+  let result = next(action)
+  console.log('next state', store.getState()) // eslint-disable-line no-console
+  console.groupEnd(action.type) // eslint-disable-line no-console
+  return result
+}
+
+export const configureStore = () => createStore(
+  rootReducer,
+  initialState,
+  applyMiddleware(logger, promiseMiddleware())
+)
