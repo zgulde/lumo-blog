@@ -20,6 +20,7 @@ export class LoginForm extends React.Component {
   }
 
   handleSubmit(e) {
+    e.preventDefault()
     const {email, password} = this.state
     this.props.handleSubmit({email, password})
   }
@@ -49,7 +50,7 @@ export class LoginForm extends React.Component {
 }
 
 export const mapDispatchToProps = (dispatch) => ({
-  handleSubmit: ({email, password}) => actions.login({email, password})
+  handleSubmit: ({email, password}) => dispatch(actions.login({email, password}))
 })
 
 export default connect(null, mapDispatchToProps)(LoginForm)

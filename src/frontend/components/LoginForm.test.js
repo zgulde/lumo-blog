@@ -14,8 +14,10 @@ describe('<LoginForm />', () => {
   it('Calls the passed handler when submitted', () => {
     const handleSubmit = jest.fn()
     const form = shallow(<LoginForm handleSubmit={handleSubmit} />)
-    form.simulate('submit')
+    const preventDefault = jest.fn()
+    form.simulate('submit', {preventDefault})
     expect(handleSubmit).toHaveBeenCalled()
+    expect(preventDefault).toHaveBeenCalled()
   })
   it('keeps the email and password in it\'s state', () => {
     const user = {email: 'test@gmail.com', password: 'password'}
@@ -41,7 +43,7 @@ describe('<LoginForm />', () => {
     const passEvent = {target: {name: 'password', value: user.password}}
     form.find('input[name="password"]').simulate('change', passEvent)
 
-    form.simulate('submit')
+    form.simulate('submit', {preventDefault: () => null})
     expect(handleSubmit).toHaveBeenCalledWith(user)
   })
   it('renders an error message if passed', () => {
