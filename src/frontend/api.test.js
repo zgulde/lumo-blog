@@ -43,6 +43,14 @@ describe('api#createPost', () => {
       return expect(scope.isDone()).toBe(true)
     })
   })
+  it('has a content-type header of "application/json"', () => {
+    const reqheaders = {'content-type': 'application/json'}
+    const scope = nock(env.baseUrl, {reqheaders})
+      .post('/posts')
+      .reply(200, Object.assign(post, {user_id: 1}))
+    return api.createPost(post).then(() =>
+      expect(scope.isDone()).toBe(true))
+  })
   it('submits the passed title and body in the request', () => {
     const scope = nock(env.baseUrl)
       .post('/posts', post)
@@ -92,6 +100,11 @@ describe('api#login', () => {
   })
   it('submits a POST request to /login', () => {
     const ctx = nock(env.baseUrl).post('/login').reply(200, user)
+    return api.login({email: '', password: ''}).then(() => expect(ctx.isDone()).toBe(true))
+  })
+  it('has a contnet-type header of "application/json"', () => {
+    const config = {reqheaders: {'content-type': 'application/json'}}
+    const ctx = nock(env.baseUrl, config).post('/login').reply(200, user)
     return api.login({email: '', password: ''}).then(() => expect(ctx.isDone()).toBe(true))
   })
   it('submits an email and password', () => {

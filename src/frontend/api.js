@@ -15,6 +15,7 @@ export default {
   createPost(post) {
     return fetch(`${env.baseUrl}/posts`, {
       method: 'POST',
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(post)
     }).then((response) => {
       if (response.status === 200) {
@@ -32,6 +33,7 @@ export default {
   login({email, password}) {
     return fetch(`${env.baseUrl}/login`, {
       method: 'POST',
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({email, password})
     }).then(response => response.json()).then((response) => {
       return response.success ? response : {success: false}
