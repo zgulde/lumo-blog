@@ -60,7 +60,19 @@ describe('FETCH_POSTS', () => {
     const state = rootReducer(initial, {type: 'FETCH_POSTS_PENDING'})
     expect(state.errors.network.posts).toBe(null)
   })
-  // it('handles _REJECTED', () => {
-  //   const state = rootReducer(initialState, {type: 'FETCH_POSTS_REJECTED'})
-  // })
+  it('handles _REJECTED', () => {
+    const action = {type: 'FETCH_POSTS_REJECTED', payload: 'Network Error'}
+    const state = rootReducer(initialState, action)
+    expect(state.errors.network.posts).not.toBe(null)
+    expect(state.errors.network.posts).toBe(action.payload)
+    expect(state.pendingRequests.posts).toBe(false)
+  })
+  it('handles _FULFILLED', () => {
+    const action = {type: 'FETCH_POSTS_FULFILLED', payload: []}
+    const state = rootReducer(initialState, action)
+    expect(state.errors.network.posts).toBe(null)
+    expect(state.pendingRequests.posts).toBe(false)
+    expect(Array.isArray(state.posts)).toBe(true)
+    expect(state.posts).toEqual(action.payload)
+  })
 })

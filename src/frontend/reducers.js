@@ -24,10 +24,20 @@ export const rootReducer = (state = initialState, action) => {
         pendingRequests: {posts: true},
         errors: {network: {posts: null}}
       })
+    case 'FETCH_POSTS_REJECTED':
+      return merge(state, {
+        pendingRequests: {posts: false},
+        errors: {network: {posts: action.payload}}
+      })
+    case 'FETCH_POSTS_FULFILLED':
+      return merge(state, {
+        pendingRequests: {posts: false},
+        posts: action.payload
+      })
     case 'LOGIN_PENDING':
       return merge(state, {
-        pendingRequests: {login: true}},
-        {errors: {network: {login: null}}
+        pendingRequests: {login: true},
+        errors: {network: {login: null}}
       })
     case 'LOGIN_FULFILLED':
     case 'LOGIN_REJECTED':
