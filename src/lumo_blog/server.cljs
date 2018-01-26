@@ -9,22 +9,22 @@
 (def static (.-static (js/require "express")))
 
 (defn configure-app [app]
-  ;; middlewares
-  (.use app (static "public"))
-  (.use app (.json body-parser))
-  (.use app (cookie-session (clj->js {:name "my-session" :secret "secret"})))
-  (.use app mw/error-handler)
+  (-> app
+      ;; middlewares
+      (.use (static "public"))
+      (.use (.json body-parser))
+      (.use (cookie-session (clj->js {:name "my-session" :secret "secret"})))
+      (.use mw/error-handler)
 
-  ;; routes
-  (.post app "/login" user-controller/login)
-  (.post app "/logout" mw/logged-in user-controller/logout)
-  (.get app "/account" mw/logged-in user-controller/account)
+      ;; routes
+      (.post "/login" user-controller/login)
+      (.post "/logout" mw/logged-in user-controller/logout)
+      (.get "/account" mw/logged-in user-controller/account)
 
-  (.post app "/users" user-controller/signup)
+      (.post "/users" user-controller/signup)
 
-  (.get app "/posts" post-controller/index)
-  (.get app "/posts/:id" post-controller/show)
-  (.post app "/posts" mw/logged-in post-controller/create)
-  (.put app "/posts/:id" mw/logged-in mw/post-access-control post-controller/update)
-  (.delete app "/posts/:id" mw/logged-in mw/post-access-control post-controller/destroy)
-  app)
+      (.get "/posts" post-controller/index)
+      (.get "/posts/:id" post-controller/show)
+      (.post "/posts" mw/logged-in post-controller/create)
+      (.put "/posts/:id" mw/logged-in mw/post-access-control post-controller/update)
+      (.delete "/posts/:id" mw/logged-in mw/post-access-control post-controller/destroy)))
